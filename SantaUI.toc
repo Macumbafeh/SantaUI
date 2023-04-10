@@ -1,0 +1,13 @@
+## Interface: 20400
+## Title: Santa's UI
+## Notes: Ho ho ho...
+## SavedVariables: SantaUIDB
+SantaUI.lua 
+ActionBars.lua
+ActionBarsButtons.lua
+-- AutoRepair.lua
+-- AutoSell.lua
+-- Bags.lua
+-- Castbars.lua
+-- ErrorHide.lua
+Minimap.lua

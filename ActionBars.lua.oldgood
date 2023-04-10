@@ -1,0 +1,135 @@
+local AddOn = CreateFrame("Frame")
+local OnEvent = function(self, event, ...) self[event](self, event, ...) end
+AddOn:SetScript("OnEvent", OnEvent)
+
+-- Hide graphics  
+for _, frame in ipairs({
+  MainMenuBarLeftEndCap, 
+  MainMenuBarRightEndCap, 
+  MainMenuBarPageNumber, 
+  MainMenuXPBarTexture2, 
+  MainMenuXPBarTexture3, 
+  MainMenuBarTexture2, 
+  MainMenuBarTexture3, 
+  MainMenuMaxLevelBar2, 
+  MainMenuMaxLevelBar3, 
+  MainMenuBarPerformanceBarFrame
+  }) do
+		frame:Hide()
+end
+
+for _, texture in ipairs({
+  ReputationWatchBarTexture2, 
+  ReputationWatchBarTexture3, 
+  ReputationXPBarTexture2, 
+  ReputationXPBarTexture3, 
+  MainMenuBarTexture0, 
+  MainMenuBarTexture1, 
+  ReputationWatchBarTexture0, 
+  ReputationWatchBarTexture1, 
+  ReputationXPBarTexture0, 
+  ReputationXPBarTexture1, 
+  MainMenuBarLeftEndCap, 
+  MainMenuBarRightEndCap, 
+  MainMenuXPBarTexture0, 
+  MainMenuXPBarTexture1, 
+  MainMenuMaxLevelBar0, 
+  MainMenuMaxLevelBar1, 
+  PossessBackground1, 
+  PossessBackground2
+  }) do
+	texture:SetTexture(nil)
+end
+-- BonusActionBarTexture0, BonusActionBarTexture1
+
+--Stance / Shapeshiftbar move
+ShapeshiftBarFrame:ClearAllPoints()
+ShapeshiftBarFrame:SetPoint("BOTTOMLEFT", 10, 134)
+ShapeshiftBarFrame:SetScale(1)
+ShapeshiftBarFrame.SetPoint = function() end
+
+
+--Pet Action Bar move
+PetActionBarFrame:ClearAllPoints()
+PetActionBarFrame:SetPoint("BOTTOMLEFT", 10, 132)
+PetActionBarFrame:SetScale(1)
+
+
+-- Scaling
+MainMenuBar:SetScale(0.8)
+MultiBarBottomLeft:SetScale(0.8); MultiBarBottomRight:SetScale(0.8)
+MultiBarRight:SetScale(0.8); MultiBarLeft:SetScale(0.8)
+
+--Bottom right actionbar
+MainMenuBar:ClearAllPoints()
+MainMenuBar:SetPoint("BOTTOM", 254, 5)
+MultiBarBottomRight:ClearAllPoints()
+MultiBarBottomRight:SetPoint("BOTTOM", 0, 100)
+
+
+-- Experience bar
+MainMenuExpBar:SetScale(0.9)
+MainMenuExpBar:SetWidth(550)
+MainMenuExpBar:ClearAllPoints()
+MainMenuExpBar:SetPoint("BOTTOMLEFT", 10, 46)
+ReputationWatchBar:SetScale(0.9)
+ReputationWatchBar:SetWidth(520)
+ReputationWatchStatusBar:SetWidth(520)
+
+
+--[[ Move "bottom right" actionbar
+MultiBarBottomRight:ClearAllPoints()
+MultiBarBottomRight:SetPoint("BOTTOM", 275, 4)
+
+-- Move "multibar right" and make it horizontal
+for i=1,12 do 
+	_G["MultiBarRightButton"..i]:ClearAllPoints()
+	_G["MultiBarRightButton"..i]:SetPoint("BOTTOM", MultiBarBottomLeft, "BOTTOM", 255+i*42, 0)
+end
+
+-- Move "multibar left" to replace "multibar right"
+MultiBarLeft:ClearAllPoints()
+MultiBarLeft:SetPoint("RIGHT", UIParent, "RIGHT", 0, -100)
+]]
+-- Paging
+--ActionBarUpButton:SetPoint("RIGHT", -22, 5)
+ActionBarUpButton:SetAlpha(0.5)
+--ActionBarDownButton:SetPoint("RIGHT", -22, -16)
+ActionBarDownButton:SetAlpha(0.5)
+
+-- Bags
+MainMenuBarBackpackButton:ClearAllPoints()
+MainMenuBarBackpackButton:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -5, 47)
+MainMenuBarBackpackButton:SetScale(0.75)
+MainMenuBarBackpackButton:SetAlpha(1)
+CharacterBag0Slot:SetScale(0.75)
+CharacterBag1Slot:SetScale(0.75)
+CharacterBag2Slot:SetScale(0.75)
+CharacterBag3Slot:SetScale(0.75)
+KeyRingButton:SetScale(0.65)
+
+-- Micro menu
+local function PLAYER_ENTERING_WORLD()
+	CharacterMicroButton:ClearAllPoints()
+	CharacterMicroButton:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -185, 1)
+end
+
+do
+	local b = {
+		"CharacterMicroButton",
+		"SpellbookMicroButton",
+		"TalentMicroButton",
+		"QuestLogMicroButton",
+		"SocialsMicroButton",
+		"LFGMicroButton",
+		"MainMenuMicroButton",
+		"HelpMicroButton"
+		}
+	for k, v in pairs(b) do
+		_G[v]:SetScale(0.88)
+		_G[v]:SetAlpha(1)
+	end
+end
+
+AddOn:RegisterEvent("PLAYER_ENTERING_WORLD")
+AddOn["PLAYER_ENTERING_WORLD"] = PLAYER_ENTERING_WORLD

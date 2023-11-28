@@ -163,7 +163,7 @@ MultiBarBottomRightButton7:SetPoint("LEFT", MainMenuBar, 513, -5)
 
 
 MainMenuExpBar:SetScale(0.735)
-
+ExhaustionTick:SetScale(0.735)
 MainMenuExpBar:ClearAllPoints()
 MainMenuExpBar:SetPoint("CENTER", ReputationWatchBar, 175, -80)
 

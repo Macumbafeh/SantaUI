@@ -166,7 +166,7 @@ MainMenuExpBar:SetScale(0.735)
 ExhaustionTick:SetScale(0.735)
 MainMenuExpBar:ClearAllPoints()
 MainMenuExpBar:SetPoint("CENTER", ReputationWatchBar, 175, -80)
-
+MainMenuBarExpText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
 MainMenuBarExpText:SetPoint("TOP", MainMenuExpBar, 0, 0)
 ReputationWatchBar:SetScale(0.9)
 ReputationWatchBar:SetWidth(500)
@@ -186,6 +186,17 @@ ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 5)
 -- ActionBarDownButton:SetAlpha(0.5)
 
 
+-- fix for bar overlap for warrior but remove bars stance
+-- if select(2, UnitClass("player")) == "WARRIOR" then
+--	local frame = CreateFrame("frame");
+--	frame:RegisterEvent("PLAYER_ENTERING_WORLD");
+--	local HIDE_BONUS_BARS = function()
+--		BonusActionBarFrame:UnregisterAllEvents();
+--		BonusActionBarFrame.Show = function() end
+--		BonusActionBarFrame:Hide();
+--	end
+--	frame:SetScript("OnEvent", HIDE_BONUS_BARS);
+-- end
 
 
 -- Bags
@@ -228,7 +239,8 @@ KeyRingButton:SetScale(1)
 -- Micro menu
 local function PLAYER_ENTERING_WORLD()
 	CharacterMicroButton:ClearAllPoints()
-	CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1100)
+	-- CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1100)
+	CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1030)
 end
 
 do

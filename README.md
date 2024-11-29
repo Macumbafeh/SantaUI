@@ -8,7 +8,8 @@ The pet bar can be moved with alt+click on the first spell of the bar.
 
 The bags can be moved where you want with alt+click too (on the first default bag), it will move the micro menu also.
 
-i added a slash command to set the micro menu above or below the bags. Type /movemicrobutton
+i added a slash command to set the micro menu above or below the bags. 
+Type /movemicrobutton
 
 ![image](https://github.com/user-attachments/assets/dda6ebf4-9552-403e-a505-d08f4fe7ef5b)
 

@@ -5,7 +5,9 @@ Shift forms/Stance, stealth, ect... are still hidden and can be shown with mouse
  zUI Action bar which let you have 2 bigs action bar
 
 The pet bar can be moved with alt+click on the first spell of the bar. 
+
 The XP bar is at the bottom of the action bar
+
 The bags can be moved where you want with alt+click too (on the first default bag), it will move the micro menu also.
 
 i added a slash command to set the micro menu above or below the bags.

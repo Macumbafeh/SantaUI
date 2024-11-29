@@ -33,6 +33,9 @@ function events:PLAYER_ENTERING_WORLD()
     addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+function events:PLAYER_REGEN_ENABLED()
+    addon:UnregisterEvent("PLAYER_REGEN_ENABLED")
+end											 
 --- save variables to SavedVariables
 function events:PLAYER_LOGOUT()
 	SantaUIDB = SantaUIDB_local
@@ -45,7 +48,7 @@ end
 for _, frame in ipairs({
   MainMenuBarLeftEndCap, 
   MainMenuBarRightEndCap, 
-  MainMenuBarPageNumber, 
+ -- MainMenuBarPageNumber, 
   MainMenuXPBarTexture2, 
   MainMenuXPBarTexture3, 
   MainMenuBarTexture2, 
@@ -134,6 +137,7 @@ PossessButton1:SetScale(1)
 -- Scaling
 MainMenuBar:SetScale(1)
 MainMenuBar:SetWidth(510)
+MainMenuBarPageNumber:SetPoint("LEFT", MainMenuBar, -10, -5)
 MultiBarBottomLeft:SetScale(1); MultiBarBottomRight:SetScale(1)
 MultiBarRight:SetScale(1); MultiBarLeft:SetScale(1)
 
@@ -141,8 +145,10 @@ MultiBarRight:SetScale(1); MultiBarLeft:SetScale(1)
 MainMenuBar:ClearAllPoints()
 	MAX_PLAYER_LEVEL = 70
 if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()						 
     MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
 	else
+	MainMenuBar:ClearAllPoints()						 
 	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
 end
 -- MainMenuBar:ClearAllPoints()
@@ -155,13 +161,14 @@ MultiBarBottomRight:SetPoint("LEFT", MultiBarBottomLeft, "RIGHT", 5, 0)
 MultiBarBottomRightButton7:SetPoint("LEFT", MainMenuBar, 513, -5)
 
 
-                
+if event == "PLAYER_ENTERING_WORLD" then 
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end               
 
 
 
 -- Experience bar
-
-
 MainMenuExpBar:SetScale(0.735)
 ExhaustionTick:SetScale(0.735)
 MainMenuExpBar:ClearAllPoints()
@@ -173,7 +180,7 @@ ReputationWatchBar:SetWidth(500)
 ReputationWatchStatusBar:SetScale(0.82)
 ReputationWatchStatusBar:SetPoint("LEFT", ReputationWatchBar, -35, -54)
 
-ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 5)
+ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 3)
 
 
 
@@ -237,11 +244,60 @@ KeyRingButton:SetScale(1)
 
 
 -- Micro menu
-local function PLAYER_ENTERING_WORLD()
-	CharacterMicroButton:ClearAllPoints()
-	-- CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1100)
-	CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1030)
+-- Configuration to set the position of CharacterMicroButton
+local isAboveBags = true -- Default to "above bags". Change to `false` for "below bags".
+
+-- Function to set the position of the CharacterMicroButton
+local function SetCharacterMicroButtonPosition()
+    if InCombatLockdown() then
+        -- Retry after leaving combat
+        local f = CreateFrame("Frame")
+        f:RegisterEvent("PLAYER_REGEN_ENABLED")
+        f:SetScript("OnEvent", function()
+            SetCharacterMicroButtonPosition()
+            f:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        end)
+        return
+    end
+
+    CharacterMicroButton:ClearAllPoints()
+    if isAboveBags then
+        -- Position above the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -183, 43)
+    else
+        -- Position below the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -183, -40)
+    end
 end
+
+-- Event handlers
+local function PLAYER_ENTERING_WORLD()
+    SetCharacterMicroButtonPosition()
+end
+
+local function PLAYER_REGEN_ENABLED()
+    SetCharacterMicroButtonPosition()
+end
+
+-- Add a slash command to toggle the position dynamically
+SLASH_TOGGLEMICROBUTTON1 = "/movemicrobutton"
+SlashCmdList["TOGGLEMICROBUTTON"] = function()
+    isAboveBags = not isAboveBags
+    SetCharacterMicroButtonPosition()
+    print("Character Micro Button is now " .. (isAboveBags and "above" or "below") .. " the bags.")
+end
+
+-- Register the event handlers
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+frame:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        PLAYER_ENTERING_WORLD()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        PLAYER_REGEN_ENABLED()
+    end
+end)
 
 do
 	local b = {
@@ -267,11 +323,24 @@ local f = CreateFrame("Frame", UIParent)
 f:SetHeight(20)
 f:SetWidth(140)
 f:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1100)
+	if isAboveBags then
+      -- Position above the bags
+       f:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -183, 43)
+	else
+       -- Position below the bags
+       f:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -183, -40)
+	end
 
 local fixMicroMenu = function(frame)
 	local resetPos = function()
 		CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", 25, -55)
+		if isAboveBags then
+			-- Position above the bags
+			CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -183, 43)
+		else
+        -- Position below the bags
+			CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -183, -40)
+		end
 	end
 
 	frame:EnableMouse(true)
@@ -317,4 +386,6 @@ BonusActionBarTexture1:Hide()
 enableMouseOver(ShapeshiftBarFrame, true)
 
 AddOn:RegisterEvent("PLAYER_ENTERING_WORLD")
+AddOn:RegisterEvent("PLAYER_REGEN_ENABLED")
+AddOn["PLAYER_REGEN_ENABLED"] = PLAYER_REGEN_ENABLED								   
 AddOn["PLAYER_ENTERING_WORLD"] = PLAYER_ENTERING_WORLD

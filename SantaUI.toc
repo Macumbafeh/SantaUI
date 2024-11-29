@@ -5,7 +5,7 @@
 SantaUI.lua 
 ActionBars.lua
 ActionBarsButtons.lua
--- AutoRepair.lua
+AutoRepair.lua
 -- AutoSell.lua
 -- Bags.lua
 -- Castbars.lua

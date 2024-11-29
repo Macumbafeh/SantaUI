@@ -244,18 +244,61 @@ KeyRingButton:SetScale(1)
 
 
 -- Micro menu
+-- Configuration to set the position of CharacterMicroButton
+local isAboveBags = true -- Default to "above bags". Change to `false` for "below bags".
+
+-- Function to set the position of the CharacterMicroButton
 local function SetCharacterMicroButtonPosition()
+    if InCombatLockdown() then
+        -- Retry after leaving combat
+        local f = CreateFrame("Frame")
+        f:RegisterEvent("PLAYER_REGEN_ENABLED")
+        f:SetScript("OnEvent", function()
+            SetCharacterMicroButtonPosition()
+            f:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        end)
+        return
+    end
+
     CharacterMicroButton:ClearAllPoints()
-    CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+    if isAboveBags then
+        -- Position above the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
+    else
+        -- Position below the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+    end
 end
 
+-- Event handlers
 local function PLAYER_ENTERING_WORLD()
-	SetCharacterMicroButtonPosition()
+    SetCharacterMicroButtonPosition()
 end
 
 local function PLAYER_REGEN_ENABLED()
-	SetCharacterMicroButtonPosition()
+    SetCharacterMicroButtonPosition()
 end
+
+-- Add a slash command to toggle the position dynamically
+SLASH_TOGGLEMICROBUTTON1 = "/movemicrobutton"
+SlashCmdList["TOGGLEMICROBUTTON"] = function()
+    isAboveBags = not isAboveBags
+    SetCharacterMicroButtonPosition()
+    print("Character Micro Button is now " .. (isAboveBags and "above" or "below") .. " the bags.")
+end
+
+-- Register the event handlers
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+frame:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        PLAYER_ENTERING_WORLD()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        PLAYER_REGEN_ENABLED()
+    end
+end)
+
 
 
 
@@ -268,6 +311,7 @@ do
 		"SocialsMicroButton",
 		"LFDMicroButton",
 		"MainMenuMicroButton",
+		"AchievementMicroButton",
 		"HelpMicroButton",
 		"PVPMicroButton",
 		-- "CollectionsMicroButton"
@@ -279,180 +323,16 @@ do
 end
 
 
-		CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-      local moving
-      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
-        if moving or InCombatLockdown() then return end
-        moving = true
-        self:ClearAllPoints()
-        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-        moving = nil
-      end)
-    
-      CharacterMicroButton:ClearAllPoints()
-      CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-      local moving
-      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
-        if moving or InCombatLockdown() then return end
-        moving = true
-        self:ClearAllPoints()
-        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-        moving = nil
-      end)
-
-if not InCombatLockdown() then	  
-	 CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-      local moving
-      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
-        if moving or InCombatLockdown() then return end
-        moving = true
-        self:ClearAllPoints()
-        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-        moving = nil
-      end)
-    
-      CharacterMicroButton:ClearAllPoints()
-      CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-      local moving
-      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
-        if moving or InCombatLockdown() then return end
-        moving = true
-        self:ClearAllPoints()
-        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-        moving = nil
-      end)
-else
-		CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-      local moving
-      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
-        if moving or InCombatLockdown() then return end
-        moving = true
-        self:ClearAllPoints()
-        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-        moving = nil
-      end)
-    
-      CharacterMicroButton:ClearAllPoints()
-      CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-      local moving
-      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
-        if moving or InCombatLockdown() then return end
-        moving = true
-        self:ClearAllPoints()
-        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
-		MAX_PLAYER_LEVEL = 70
-if UnitLevel("player") < MAX_PLAYER_LEVEL then
-	MainMenuBar:ClearAllPoints()
-    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-	else
-	MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
-        moving = nil
-      end)
-end
-
 -- Ghetto fix for the micro menu resetting it's postition sometimes
 local f = CreateFrame("Frame", UIParent)
 f:SetHeight(20)
 f:SetWidth(140)
-f:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+f:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
 
 local fixMicroMenu = function(frame)
 	local resetPos = function()
 		CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
 	end
 
 	frame:EnableMouse(true)

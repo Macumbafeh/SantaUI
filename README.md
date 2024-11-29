@@ -1,5 +1,5 @@
 # SantaUI
-Modified version for 2.4.3 which add Spell icons bigger, Bags and Menu are not hidden and are at bottom right corner.
+Modified version for 3.3.5. Bags and Menu are not hidden and are at bottom right corner.
 Shift forms/Stance, stealth, ect... are still hidden and can be shown with mouseover. (Second screen) 
 
  zUI Action bar

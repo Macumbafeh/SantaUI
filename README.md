@@ -11,7 +11,8 @@ The bags can be moved where you want with alt+click too (on the first default ba
 i added a slash command to set the micro menu above or below the bags.
 Type /movemicrobutton
 
-![image](https://github.com/user-attachments/assets/f13cc63a-cd83-47fb-97f3-88c4bb08c689)
+![image](https://github.com/user-attachments/assets/7c8f393e-472d-42ba-afde-0f79850c71c5)
+
 
 ![image](https://github.com/user-attachments/assets/11f269b9-5aff-4ab8-86ee-84afc26eabdf)
 

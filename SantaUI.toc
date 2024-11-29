@@ -1,4 +1,4 @@
-## Interface: 20400
+## Interface: 30300
 ## Title: Santa's UI
 ## Notes: Ho ho ho...
 ## SavedVariables: SantaUIDB

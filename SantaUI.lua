@@ -45,18 +45,19 @@ TargetFrame:SetPoint("TOPLEFT", 350, -30)
 	-- Interface
 BuffFrame:SetScale(1.6)
 
-PlayerPVPIcon:SetAlpha(0)
-TargetPVPIcon:SetAlpha(0)
+--[[PlayerPVPIcon:SetAlpha(0)
+TargetPVPIcon:SetAlpha(0)]]
 	if FocusFrame == true then
-		FocusPVPIcon:SetAlpha(0)
+		-- FocusPVPIcon:SetAlpha(0)
 		FocusFrame:SetScale(1.6)
 	end
 
 -- Font size
-PlayerFrame.name:SetFont("Fonts\\FRIZQT__.ttf",11)
+--[[PlayerName:SetFont("Fonts\\FRIZQT__.ttf",11)
 PlayerFrameHealthBarText:SetFont("Fonts\\FRIZQT__.ttf",11,"OUTLINE")
 PlayerFrameManaBarText:SetFont("Fonts\\FRIZQT__.ttf",11,"OUTLINE")
 
 TargetFrame.name:SetFont("Fonts\\FRIZQT__.ttf",11)
 TargetFrameHealthBarText:SetFont("Fonts\\FRIZQT__.ttf",11,"OUTLINE")
 TargetFrameManaBarText:SetFont("Fonts\\FRIZQT__.ttf",11,"OUTLINE")
+]]

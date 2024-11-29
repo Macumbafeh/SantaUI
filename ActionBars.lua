@@ -33,6 +33,10 @@ function events:PLAYER_ENTERING_WORLD()
     addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+function events:PLAYER_REGEN_ENABLED()
+    addon:UnregisterEvent("PLAYER_REGEN_ENABLED")
+end
+
 --- save variables to SavedVariables
 function events:PLAYER_LOGOUT()
 	SantaUIDB = SantaUIDB_local
@@ -57,7 +61,7 @@ for _, frame in ipairs({
   MainMenuBarPerformanceBarFrame,
   ActionBarUpButton,
   ActionBarDownButton,
-  BonusActionBarFrame,
+  -- BonusActionBarFrame,
   GameTimeFrame
   }) do
 		frame:Hide()
@@ -138,11 +142,13 @@ MultiBarBottomLeft:SetScale(1); MultiBarBottomRight:SetScale(1)
 MultiBarRight:SetScale(1); MultiBarLeft:SetScale(1)
 
 -- Bottom right actionbar
-MainMenuBar:ClearAllPoints()
+
 	MAX_PLAYER_LEVEL = 70
 if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
     MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
 	else
+	MainMenuBar:ClearAllPoints()
 	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
 end
 -- MainMenuBar:ClearAllPoints()
@@ -154,10 +160,10 @@ MultiBarBottomRight:SetPoint("LEFT", MultiBarBottomLeft, "RIGHT", 5, 0)
 --reposition second half of top right bar, underneath
 MultiBarBottomRightButton7:SetPoint("LEFT", MainMenuBar, 513, -5)
 
-
-                
-
-
+if event == "PLAYER_ENTERING_WORLD" then 
+MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
 
 -- Experience bar
 
@@ -166,14 +172,15 @@ MainMenuExpBar:SetScale(0.735)
 ExhaustionTick:SetScale(0.735)
 MainMenuExpBar:ClearAllPoints()
 MainMenuExpBar:SetPoint("CENTER", ReputationWatchBar, 175, -80)
-MainMenuBarExpText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
+
 MainMenuBarExpText:SetPoint("TOP", MainMenuExpBar, 0, 0)
+MainMenuBarExpText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
 ReputationWatchBar:SetScale(0.9)
 ReputationWatchBar:SetWidth(500)
 ReputationWatchStatusBar:SetScale(0.82)
 ReputationWatchStatusBar:SetPoint("LEFT", ReputationWatchBar, -35, -54)
-
-ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 5)
+ReputationWatchStatusBarText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
+ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 2)
 
 
 
@@ -181,9 +188,9 @@ ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 5)
 
 -- Paging
 -- ActionBarUpButton:SetPoint("RIGHT", -22, 5)
--- ActionBarUpButton:SetAlpha(0.5)
+ActionBarUpButton:SetAlpha(0)
 -- ActionBarDownButton:SetPoint("RIGHT", -22, -16)
--- ActionBarDownButton:SetAlpha(0.5)
+ActionBarDownButton:SetAlpha(0)
 
 
 -- fix for bar overlap for warrior but remove bars stance
@@ -237,11 +244,20 @@ KeyRingButton:SetScale(1)
 
 
 -- Micro menu
-local function PLAYER_ENTERING_WORLD()
-	CharacterMicroButton:ClearAllPoints()
-	-- CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1100)
-	CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1030)
+local function SetCharacterMicroButtonPosition()
+    CharacterMicroButton:ClearAllPoints()
+    CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
 end
+
+local function PLAYER_ENTERING_WORLD()
+	SetCharacterMicroButtonPosition()
+end
+
+local function PLAYER_REGEN_ENABLED()
+	SetCharacterMicroButtonPosition()
+end
+
+
 
 do
 	local b = {
@@ -250,9 +266,11 @@ do
 		"TalentMicroButton",
 		"QuestLogMicroButton",
 		"SocialsMicroButton",
-		"LFGMicroButton",
+		"LFDMicroButton",
 		"MainMenuMicroButton",
-		"HelpMicroButton"
+		"HelpMicroButton",
+		"PVPMicroButton",
+		-- "CollectionsMicroButton"
 		}
 	for k, v in pairs(b) do
 		_G[v]:SetScale(0.9)
@@ -261,17 +279,180 @@ do
 end
 
 
+		CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+      local moving
+      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
+        if moving or InCombatLockdown() then return end
+        moving = true
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+        moving = nil
+      end)
+    
+      CharacterMicroButton:ClearAllPoints()
+      CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+      local moving
+      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
+        if moving or InCombatLockdown() then return end
+        moving = true
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+        moving = nil
+      end)
+
+if not InCombatLockdown() then	  
+	 CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+      local moving
+      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
+        if moving or InCombatLockdown() then return end
+        moving = true
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+        moving = nil
+      end)
+    
+      CharacterMicroButton:ClearAllPoints()
+      CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+      local moving
+      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
+        if moving or InCombatLockdown() then return end
+        moving = true
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+        moving = nil
+      end)
+else
+		CharacterMicroButton:ClearAllPoints()
+		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+      local moving
+      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
+        if moving or InCombatLockdown() then return end
+        moving = true
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+        moving = nil
+      end)
+    
+      CharacterMicroButton:ClearAllPoints()
+      CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+      local moving
+      hooksecurefunc(CharacterMicroButton, "SetPoint", function(self)
+        if moving or InCombatLockdown() then return end
+        moving = true
+        self:ClearAllPoints()
+        self:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
+		MAX_PLAYER_LEVEL = 70
+if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	MainMenuBar:ClearAllPoints()
+    MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+	MainMenuBar:ClearAllPoints()
+	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+end
+        moving = nil
+      end)
+end
 
 -- Ghetto fix for the micro menu resetting it's postition sometimes
 local f = CreateFrame("Frame", UIParent)
 f:SetHeight(20)
 f:SetWidth(140)
-f:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -40, -1100)
+f:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
 
 local fixMicroMenu = function(frame)
 	local resetPos = function()
 		CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", 25, -55)
+		CharacterMicroButton:SetPoint("BOTTOMLEFT", "Minimap", "BOTTOMLEFT", -85, -990)
 	end
 
 	frame:EnableMouse(true)
@@ -317,4 +498,6 @@ BonusActionBarTexture1:Hide()
 enableMouseOver(ShapeshiftBarFrame, true)
 
 AddOn:RegisterEvent("PLAYER_ENTERING_WORLD")
+AddOn:RegisterEvent("PLAYER_REGEN_ENABLED")
+AddOn["PLAYER_REGEN_ENABLED"] = PLAYER_REGEN_ENABLED
 AddOn["PLAYER_ENTERING_WORLD"] = PLAYER_ENTERING_WORLD

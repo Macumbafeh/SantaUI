@@ -171,16 +171,16 @@ end
 MainMenuExpBar:SetScale(0.735)
 ExhaustionTick:SetScale(0.735)
 MainMenuExpBar:ClearAllPoints()
-MainMenuExpBar:SetPoint("CENTER", ReputationWatchBar, 175, -80)
+MainMenuExpBar:SetPoint("CENTER", ReputationWatchBar, 175, -82)
 
-MainMenuBarExpText:SetPoint("TOP", MainMenuExpBar, 0, 0)
-MainMenuBarExpText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
+MainMenuBarExpText:SetPoint("TOP", MainMenuExpBar, 0, 1)
+MainMenuBarExpText:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE");
 ReputationWatchBar:SetScale(0.9)
 ReputationWatchBar:SetWidth(500)
 ReputationWatchStatusBar:SetScale(0.82)
 ReputationWatchStatusBar:SetPoint("LEFT", ReputationWatchBar, -35, -54)
-ReputationWatchStatusBarText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
-ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchBar, 160, 2)
+ReputationWatchStatusBarText:SetFont("Fonts\\FRIZQT__.TTF", 11.5, "OUTLINE");
+ReputationWatchStatusBarText:SetPoint("TOP", ReputationWatchStatusBar, 0, 2)
 
 
 
@@ -327,12 +327,25 @@ end
 local f = CreateFrame("Frame", UIParent)
 f:SetHeight(20)
 f:SetWidth(140)
+if isAboveBags then
+        -- Position above the bags
+        f:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
+    else
+        -- Position below the bags
+        f:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+    end
 f:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
 
 local fixMicroMenu = function(frame)
 	local resetPos = function()
 		CharacterMicroButton:ClearAllPoints()
-		CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+		if isAboveBags then
+        -- Position above the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
+    else
+        -- Position below the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+    end
 	end
 
 	frame:EnableMouse(true)

@@ -4,7 +4,14 @@ Shift forms/Stance, stealth, ect... are still hidden and can be shown with mouse
 
  zUI Action bar
 
-The pet bar can be moved with alt+click on the first spell of the bar. The bag bar can be moved like that too on the first bag.
+The pet bar can be moved with alt+click on the first spell of the bar. 
+
+The bags can be moved where you want with alt+click too (on the first default bag), it will move the micro menu also.
+
+i added a slash command to set the micro menu above or below the bags.
+Type /movemicrobutton
+
+![image](https://github.com/user-attachments/assets/11f269b9-5aff-4ab8-86ee-84afc26eabdf)
 
 ![image](https://user-images.githubusercontent.com/47739411/230821468-a27d4885-886c-4833-87ff-444944c30810.png)
 

@@ -2,7 +2,7 @@
 Modified version for 3.3.5. Bags and Menu are not hidden and are at bottom right corner.
 Shift forms/Stance, stealth, ect... are still hidden and can be shown with mouseover. (Second screen) 
 
- zUI Action bar
+ zUI Action bar which let you have 2 bigs action bar
 
 The pet bar can be moved with alt+click on the first spell of the bar. 
 

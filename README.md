@@ -11,6 +11,10 @@ The bags can be moved where you want with alt+click too (on the first default ba
 i added a slash command to set the micro menu above or below the bags. 
 Type /movemicrobutton
 
+``You need to rename the folder and delete -master or -main
+This addon was made for Full HD (1920x1080) with scale UI set to 0.71111111 (pixel perfect)
+``
+
 ![image](https://github.com/user-attachments/assets/dda6ebf4-9552-403e-a505-d08f4fe7ef5b)
 
 ![image](https://user-images.githubusercontent.com/47739411/230821468-a27d4885-886c-4833-87ff-444944c30810.png)

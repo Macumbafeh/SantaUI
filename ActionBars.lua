@@ -30,11 +30,23 @@ end
 
 --- gets executed once all ui information is available (like honor etc)
 function events:PLAYER_ENTERING_WORLD()
+	ReapplyActionBarPosition()
     addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function events:PLAYER_REGEN_ENABLED()
+	ReapplyActionBarPosition()
     addon:UnregisterEvent("PLAYER_REGEN_ENABLED")
+end
+
+function events:ZONE_CHANGED_NEW_AREA()
+	ReapplyActionBarPosition()
+    addon:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+end
+
+function events:ACTIONBAR_SLOT_CHANGED()
+	ReapplyActionBarPosition()
+    addon:UnregisterEvent("ACTIONBAR_SLOT_CHANGED")
 end
 
 --- save variables to SavedVariables
@@ -160,10 +172,9 @@ MultiBarBottomRight:SetPoint("LEFT", MultiBarBottomLeft, "RIGHT", 5, 0)
 --reposition second half of top right bar, underneath
 MultiBarBottomRightButton7:SetPoint("LEFT", MainMenuBar, 513, -5)
 
-if event == "PLAYER_ENTERING_WORLD" then 
-MainMenuBar:ClearAllPoints()
-	MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-end
+
+
+
 
 -- Experience bar
 
@@ -259,14 +270,28 @@ local function SetCharacterMicroButtonPosition()
         end)
         return
     end
-
+	
     CharacterMicroButton:ClearAllPoints()
     if isAboveBags then
         -- Position above the bags
         CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
+		if UnitLevel("player") < MAX_PLAYER_LEVEL then
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+		else
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+		end
     else
         -- Position below the bags
         CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+		if UnitLevel("player") < MAX_PLAYER_LEVEL then
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+		else
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+		end
     end
 end
 
@@ -276,6 +301,14 @@ local function PLAYER_ENTERING_WORLD()
 end
 
 local function PLAYER_REGEN_ENABLED()
+    SetCharacterMicroButtonPosition()
+end
+
+local function ZONE_CHANGED_NEW_AREA()
+    SetCharacterMicroButtonPosition()
+end
+
+local function ACTIONBAR_SLOT_CHANGED()
     SetCharacterMicroButtonPosition()
 end
 
@@ -291,14 +324,47 @@ end
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 frame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         PLAYER_ENTERING_WORLD()
     elseif event == "PLAYER_REGEN_ENABLED" then
         PLAYER_REGEN_ENABLED()
+	elseif event == "ZONE_CHANGED_NEW_AREA" then
+		ZONE_CHANGED_NEW_AREA()
+	elseif event == "ACTIONBAR_SLOT_CHANGED" then
+		ACTIONBAR_SLOT_CHANGED()
     end
 end)
 
+local function ReapplyActionBarPosition()
+    if UnitLevel("player") < MAX_PLAYER_LEVEL then
+		MainMenuBar:ClearAllPoints()
+		MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+	else
+		MainMenuBar:ClearAllPoints()
+		MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+	end
+end
+
+local inCombat = false
+local events = CreateFrame("Frame")
+events:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+events:RegisterEvent("PLAYER_ENTERING_WORLD")
+events:RegisterEvent("PLAYER_REGEN_ENABLED")
+events:SetScript("OnEvent", function(self, event, ...)
+	if event == "PLAYER_REGEN_ENABLED" then
+		inCombat = false
+        ReapplyActionBarPosition()
+	elseif event == "PLAYER_REGEN_DISABLED" then
+        inCombat = true
+	elseif not inCombat then
+        ReapplyActionBarPosition()
+    else
+        ReapplyActionBarPosition()
+    end
+end)
 
 
 
@@ -392,5 +458,8 @@ enableMouseOver(ShapeshiftBarFrame, true)
 
 AddOn:RegisterEvent("PLAYER_ENTERING_WORLD")
 AddOn:RegisterEvent("PLAYER_REGEN_ENABLED")
+AddOn:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 AddOn["PLAYER_REGEN_ENABLED"] = PLAYER_REGEN_ENABLED
 AddOn["PLAYER_ENTERING_WORLD"] = PLAYER_ENTERING_WORLD
+AddOn["ZONE_CHANGED_NEW_AREA"] = ZONE_CHANGED_NEW_AREA
+AddOn["ACTIONBAR_SLOT_CHANGED"] = ACTIONBAR_SLOT_CHANGED

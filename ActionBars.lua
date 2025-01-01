@@ -316,7 +316,7 @@ end
 
 -- Add a slash command to toggle the position dynamically
 SLASH_SANTA1 = "/santa"
-SLASH_SANTA2 = "/st"
+SLASH_SANTA2 = "/sa"
 SlashCmdList["SANTA"] = function(msg)
     local command = string.lower(msg) -- Convert input to lowercase
     if command == "move" then

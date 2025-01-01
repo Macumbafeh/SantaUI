@@ -330,7 +330,23 @@ SlashCmdList["SANTA"] = function(msg)
     end
 end
 
-
+-- Register the event handlers
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+frame:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        PLAYER_ENTERING_WORLD()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        PLAYER_REGEN_ENABLED()
+	elseif event == "ZONE_CHANGED_NEW_AREA" then
+		ZONE_CHANGED_NEW_AREA()
+	elseif event == "ACTIONBAR_SLOT_CHANGED" then
+		ACTIONBAR_SLOT_CHANGED()
+    end
+end)
 
 local function ReapplyActionBarPosition()
     if UnitLevel("player") < MAX_PLAYER_LEVEL then

@@ -1,37 +1,72 @@
 local AddOn = CreateFrame("Frame")
-local OnEvent = function(self, event, ...) self[event](self, event, ...) end
+local OnEvent = function(self, event, ...)
+    if self[event] then
+        self[event](self, event, ...)
+    else
+        print("Unhandled event: " .. event)
+    end
+end
 AddOn:SetScript("OnEvent", OnEvent)
 
+local isAboveBags
 
-local SantaUIDB_local
-local events = {}
-function events:ADDON_LOADED(...)
-	if select(1, ...) == "SantaUI" then
-		SantaUIDB_local = SantaUIDB
-		if not SantaUIDB_local then -- addon loaded for first time
-			SantaUIDB_local = {}
-			print("SantaUI load default")
-			SantaUIDB_local["point"] = "CENTER"
-			SantaUIDB_local["relativePoint"] = "CENTER"
-			SantaUIDB_local["xOffset"] = 0
-			SantaUIDB_local["yOffset"] = 0
+-- Function to set the position of the CharacterMicroButton
+local function SetCharacterMicroButtonPosition()
+    if InCombatLockdown() then
+        -- Retry after leaving combat
+        local f = CreateFrame("Frame")
+        f:RegisterEvent("PLAYER_REGEN_ENABLED")
+        f:SetScript("OnEvent", function()
+            SetCharacterMicroButtonPosition()
+            f:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        end)
+        return
+    end
+	
+    CharacterMicroButton:ClearAllPoints()
+    if isAboveBags then
+        -- Position above the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+		if UnitLevel("player") < MAX_PLAYER_LEVEL then
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+		else
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
 		end
+    else
+        -- Position below the bags
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
+		if UnitLevel("player") < MAX_PLAYER_LEVEL then
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
+		else
+			MainMenuBar:ClearAllPoints()
+			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
+		end
+    end
+end
 
-		-- safe check all saved variables are there (in case older version was loaded)
-		if not SantaUIDB_local["point"] then SantaUIDB_local["point"] = "CENTER" end
-		if not SantaUIDB_local["relativePoint"] then SantaUIDB_local["relativePoint"] = "CENTER" end
-		if not SantaUIDB_local["xOffset"] then SantaUIDB_local["xOffset"] = 0 end
-		if not SantaUIDB_local["yOffset"] then SantaUIDB_local["yOffset"] = 0 end
-
-		addon:UnregisterEvent("ADDON_LOADED")
-		print("SantaUI Loaded")
-	end
+local events = {}
+function AddOn:ADDON_LOADED(event, addonName)
+    if addonName == "SantaUI" then
+        if not SantaUIDB then
+            SantaUIDB = {}
+        end
+        if SantaUIDB.isAboveBags == nil then
+            SantaUIDB.isAboveBags = true
+        end
+        isAboveBags = SantaUIDB.isAboveBags
+        SetCharacterMicroButtonPosition()
+        print("SantaUI loaded.")
+    end
 end
 
 --- gets executed once all ui information is available (like honor etc)
 function events:PLAYER_ENTERING_WORLD()
 	ReapplyActionBarPosition()
     addon:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	SetCharacterMicroButtonPosition()
 end
 
 function events:PLAYER_REGEN_ENABLED()
@@ -50,9 +85,11 @@ function events:ACTIONBAR_SLOT_CHANGED()
 end
 
 --- save variables to SavedVariables
-function events:PLAYER_LOGOUT()
-	SantaUIDB = SantaUIDB_local
+function AddOn:PLAYER_LOGOUT()
+    SantaUIDB.isAboveBags = isAboveBags
 end
+
+
 
 
 
@@ -256,44 +293,9 @@ KeyRingButton:SetScale(1)
 
 -- Micro menu
 -- Configuration to set the position of CharacterMicroButton
-local isAboveBags = true -- Default to "above bags". Change to `false` for "below bags".
 
--- Function to set the position of the CharacterMicroButton
-local function SetCharacterMicroButtonPosition()
-    if InCombatLockdown() then
-        -- Retry after leaving combat
-        local f = CreateFrame("Frame")
-        f:RegisterEvent("PLAYER_REGEN_ENABLED")
-        f:SetScript("OnEvent", function()
-            SetCharacterMicroButtonPosition()
-            f:UnregisterEvent("PLAYER_REGEN_ENABLED")
-        end)
-        return
-    end
-	
-    CharacterMicroButton:ClearAllPoints()
-    if isAboveBags then
-        -- Position above the bags
-        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
-		if UnitLevel("player") < MAX_PLAYER_LEVEL then
-			MainMenuBar:ClearAllPoints()
-			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-		else
-			MainMenuBar:ClearAllPoints()
-			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-		end
-    else
-        -- Position below the bags
-        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
-		if UnitLevel("player") < MAX_PLAYER_LEVEL then
-			MainMenuBar:ClearAllPoints()
-			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 11)
-		else
-			MainMenuBar:ClearAllPoints()
-			MainMenuBar:SetPoint("BOTTOM", UIParent, -110, 0)
-		end
-    end
-end
+
+
 
 -- Event handlers
 local function PLAYER_ENTERING_WORLD()
@@ -313,30 +315,22 @@ local function ACTIONBAR_SLOT_CHANGED()
 end
 
 -- Add a slash command to toggle the position dynamically
-SLASH_TOGGLEMICROBUTTON1 = "/movemicrobutton"
-SlashCmdList["TOGGLEMICROBUTTON"] = function()
-    isAboveBags = not isAboveBags
-    SetCharacterMicroButtonPosition()
-    print("Character Micro Button is now " .. (isAboveBags and "above" or "below") .. " the bags.")
+SLASH_SANTA1 = "/santa"
+SLASH_SANTA2 = "/st"
+SlashCmdList["SANTA"] = function(msg)
+    local command = string.lower(msg) -- Convert input to lowercase
+    if command == "move" then
+        -- Toggle the micro button position
+        isAboveBags = not isAboveBags
+        SetCharacterMicroButtonPosition()
+        print("Character Micro Button is now " .. (isAboveBags and "above" or "below") .. " the bags.")
+    else
+        -- Print usage instructions
+        print("Usage: /santa move - Toggle the micro button position above or below the bags.")
+    end
 end
 
--- Register the event handlers
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
-frame:SetScript("OnEvent", function(self, event, ...)
-    if event == "PLAYER_ENTERING_WORLD" then
-        PLAYER_ENTERING_WORLD()
-    elseif event == "PLAYER_REGEN_ENABLED" then
-        PLAYER_REGEN_ENABLED()
-	elseif event == "ZONE_CHANGED_NEW_AREA" then
-		ZONE_CHANGED_NEW_AREA()
-	elseif event == "ACTIONBAR_SLOT_CHANGED" then
-		ACTIONBAR_SLOT_CHANGED()
-    end
-end)
+
 
 local function ReapplyActionBarPosition()
     if UnitLevel("player") < MAX_PLAYER_LEVEL then
@@ -407,10 +401,10 @@ local fixMicroMenu = function(frame)
 		CharacterMicroButton:ClearAllPoints()
 		if isAboveBags then
         -- Position above the bags
-        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
     else
         -- Position below the bags
-        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, -40)
+        CharacterMicroButton:SetPoint("BOTTOMRIGHT", "MainMenuBarBackpackButton", "BOTTOMRIGHT", -223, 43)
     end
 	end
 
@@ -459,6 +453,8 @@ enableMouseOver(ShapeshiftBarFrame, true)
 AddOn:RegisterEvent("PLAYER_ENTERING_WORLD")
 AddOn:RegisterEvent("PLAYER_REGEN_ENABLED")
 AddOn:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+AddOn:RegisterEvent("PLAYER_LOGOUT")
+AddOn:RegisterEvent("ADDON_LOADED")	
 AddOn["PLAYER_REGEN_ENABLED"] = PLAYER_REGEN_ENABLED
 AddOn["PLAYER_ENTERING_WORLD"] = PLAYER_ENTERING_WORLD
 AddOn["ZONE_CHANGED_NEW_AREA"] = ZONE_CHANGED_NEW_AREA

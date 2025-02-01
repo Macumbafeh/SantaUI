@@ -11,7 +11,7 @@ The XP bar is at the bottom of the action bar
 The bags can be moved where you want with alt+click too (on the first default bag), it will move the micro menu also.
 
 i added a slash command to set the micro menu above or below the bags.
-Type /movemicrobutton
+Type /santa move or /sa move
 
 ``You need to rename the folder and delete -master or -main
 This addon was made for Full HD (1920x1080) with scale UI set to 0.71111111 (pixel perfect)
